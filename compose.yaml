@@ -1,0 +1,14 @@
+services:
+  bookservice:
+    image: postgres:15-alpine
+    ports:
+      - "9439:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=marius
+      - POSTGRES_DB=book_db
+    volumes:
+      - bookdb-data:/var/lib/pgsql/data
+
+volumes:
+  bookdb-data:
