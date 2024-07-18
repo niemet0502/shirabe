@@ -29,12 +29,7 @@ func main() {
 	// create the service
 	svc := service.NewBookService(repo)
 
-	// create the handler
-
-	// create routes
-
 	// create the server and start listening
-
 	gs := grpc.NewServer()
 
 	c := server.NewBook(svc)
