@@ -3,13 +3,45 @@ option go_package="/book";
 
 service Book {
     rpc GetBook(GetBookRequest) returns (GetBookResponse);
+    rpc GetBooks(BooksRequest) returns (BooksResponse);
+    rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
+}
+
+message CreateBookRequest {
+    string title = 2; 
+    string author = 3; 
+    string genre = 4; 
+    int32 totalPages = 5; 
+    int32 userId = 6;
+}
+
+message CreateBookResponse {
+    BookEntity book = 1;
+}
+
+message BookEntity {
+    int32 id = 1; 
+    string title = 2; 
+    string author = 3; 
+    string genre = 4; 
+    int32 status = 5; 
+    int32 totalPages = 6; 
+    int32 readingProgress = 7; 
+    int32 userId = 8;
+}
+
+message BooksRequest {
+   int32 userId = 1; 
+}
+
+message BooksResponse {
+ repeated BookEntity books = 1;
 }
 
 message GetBookRequest {
-    string msg = 1; 
+    int32 bookId = 1; 
 }
 
-
 message GetBookResponse {
-    string msg = 1; 
+    BookEntity book = 1;
 }
