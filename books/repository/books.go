@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/niemet0502/shirabe/books/models"
 )
@@ -59,7 +58,6 @@ func (repo *BookRepository) CreateBook(newBook models.CreateBook) models.Book {
 }
 
 func (repo *BookRepository) GetBook(id int) (models.Book, error) {
-	fmt.Print("Failed to fetch the book")
 
 	for _, b := range repo.books {
 		if b.ID == id {
@@ -67,7 +65,7 @@ func (repo *BookRepository) GetBook(id int) (models.Book, error) {
 		}
 	}
 
-	return models.Book{}, errors.New("Book doesn't exist")
+	return models.Book{}, errors.New("book not found")
 }
 
 func (repo *BookRepository) GetBooksByUser(id int) []models.Book {
