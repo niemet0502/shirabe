@@ -1,0 +1,55 @@
+syntax = "proto3";
+option go_package="/shelve";
+
+// create shelve 
+// update shelve
+// remove a shelve 
+// get users's shelve 
+// get a shelve with its books
+
+service ShelveService {
+    rpc GetShelves(GetShelvesRequest) returns (GetShelvesResponse);
+    rpc CreateShelf(CreateShelfRequest) returns (CreateShelfResponse);
+    rpc UpdateShelf(UpdateShelfRequest) returns (UpdateShelfResponse);
+}
+
+message UpdateShelfRequest {
+    int32 id = 1; 
+    string name = 2; 
+    int32 userId = 3; 
+}
+
+message UpdateShelfResponse {
+    Shelf shelf = 1;
+}
+
+message GetShelvesRequest {
+    int32 userId = 1;
+}
+
+message GetShelvesResponse {
+    repeated Shelf shelves = 1;
+}
+
+message Shelf {
+    int32 id = 1; 
+    string name = 2; 
+    int32 userId = 3; 
+}
+
+message CreateShelfRequest {
+    string name = 2; 
+    int32 userId = 3; 
+}
+
+message CreateShelfResponse {
+    Shelf shelf = 1; 
+}
+
+
+
+ 
+
+
+
+ 
