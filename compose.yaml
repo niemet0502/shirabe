@@ -21,6 +21,18 @@ services:
     volumes:
       - shelve-data:/var/lib/pgsql/data
 
+  usersdb:
+    image: postgres:15-alpine
+    ports:
+      - "9437:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=marius
+      - POSTGRES_DB=user_db
+    volumes:
+      - users-data:/var/lib/pgsql/data
+
 volumes:
   bookdb-data:
   shelve-data:
+  users-data:
