@@ -1,6 +1,12 @@
 syntax = "proto3";
 option go_package="/book";
 
+// get a book 
+// get books list by user 
+// create a book 
+// update a book -> set reading progress or update status
+// remove a book
+
 service Book {
     rpc GetBook(GetBookRequest) returns (GetBookResponse);
     rpc GetBooks(BooksRequest) returns (BooksResponse);

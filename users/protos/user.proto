@@ -1,0 +1,36 @@
+syntax="proto3";
+option go_package="/user";
+
+// create user 
+// update user 
+// remove user 
+// reset password
+// get user's details
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+message GetUserRequest {
+    int32 userId = 1;
+}
+
+message User {
+    string username = 1; 
+    string email = 2; 
+    string password = 3;
+}
+
+message CreateUserRequest { 
+    string email = 1; 
+    string password = 2; 
+}
+
+message CreateUserResponse {
+    User user = 1;
+}
+
+message GetUserResponse {
+    User user = 1;
+}
