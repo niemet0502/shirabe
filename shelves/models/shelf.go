@@ -1,7 +1,11 @@
 package models
 
+import (
+	"gorm.io/gorm"
+)
+
 type Shelf struct {
-	ID     int32
+	gorm.Model
 	Name   string
 	UserId int32
 }
