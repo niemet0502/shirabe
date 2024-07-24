@@ -1,31 +1,34 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 
-	_ "github.com/lib/pq"
+	"github.com/niemet0502/shirabe/users/models"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 const (
 	host     = "localhost"
-	port     = 9439
+	port     = 9437
 	user     = "marius"
 	password = "root"
-	dbname   = "book_db"
+	dbname   = "user_db"
 )
 
-func InitDb() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+func InitDb() *gorm.DB {
 
-	db, err := sql.Open("postgres", psqlInfo)
-
+	psqlInfo := fmt.Sprintf("host=%s user=%s  "+
+		"password=%s dbname=%s port=%d sslmode=disable",
+		host, user, password, dbname, port)
+	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 	if err != nil {
-		fmt.Print(err)
-		fmt.Print("Db connection failed")
+		log.Fatal(err)
 	}
+
+	// Migrate the schema
+	db.AutoMigrate(&models.User{})
 
 	return db
 }
