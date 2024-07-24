@@ -1,81 +1,54 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
+
+	"gorm.io/gorm"
 
 	"github.com/niemet0502/shirabe/books/models"
 )
 
 // the book repository needs the db connection
 type BookRepository struct {
-	db    *sql.DB
-	books []models.Book
+	db *gorm.DB
 }
 
-func NewBookRepository(db *sql.DB) *BookRepository {
-	return &BookRepository{
-		db: db,
-		books: []models.Book{
-			{
-				ID:              1,
-				Title:           "Harry Potter",
-				Author:          "JK Rowling",
-				Genre:           "Science fiction",
-				Status:          1, // Assuming Status is an integer value.
-				TotalPages:      256,
-				ReadingProgress: 0,
-				UserId:          1,
-			},
-			{
-				ID:              1,
-				Title:           "Hunger games",
-				Author:          "Collins",
-				Genre:           "Science fiction",
-				Status:          1, // Assuming Status is an integer value.
-				TotalPages:      256,
-				ReadingProgress: 0,
-				UserId:          2,
-			},
-		},
-	}
+func NewBookRepository(db *gorm.DB) *BookRepository {
+	return &BookRepository{db}
 }
 
 func (repo *BookRepository) CreateBook(newBook models.CreateBook) models.Book {
-	bookToCreate := models.Book{
-		ID:              len(repo.books) + 1,
+	book := models.Book{
 		Title:           newBook.Title,
 		Author:          newBook.Author,
 		Genre:           newBook.Genre,
-		UserId:          newBook.UserId,
+		Status:          1,
 		TotalPages:      newBook.TotalPages,
 		ReadingProgress: 0,
-		Status:          1,
+		UserId:          newBook.UserId,
 	}
-	repo.books = append(repo.books, bookToCreate)
 
-	return bookToCreate
+	repo.db.Create(&book)
+
+	return models.Book(book)
 }
 
 func (repo *BookRepository) GetBook(id int) (models.Book, error) {
+	var book models.Book
 
-	for _, b := range repo.books {
-		if b.ID == id {
-			return b, nil
-		}
+	result := repo.db.First(&book, id)
+
+	if result.Error != nil {
+		return models.Book{}, errors.New("Failed to fetch the book")
 	}
 
-	return models.Book{}, errors.New("book not found")
+	return book, nil
 }
 
 func (repo *BookRepository) GetBooksByUser(id int) []models.Book {
 	var result []models.Book
 
-	for _, b := range repo.books {
-		if b.UserId == id {
-			result = append(result, b)
-		}
-	}
+	repo.db.Find(&result, "user_id = ?", id)
 
 	return result
 }

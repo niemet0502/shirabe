@@ -29,16 +29,15 @@ func mapBookToProtosBookEntity(book models.Book) *protos.BookEntity {
 	}
 }
 
-func mapProtoBookEntityToBook(proto *protos.BookEntity) models.Book {
-	return models.Book{
-		ID:         int(proto.Id),
-		Title:      proto.Title,
-		Author:     proto.Author,
-		Genre:      proto.Genre,
-		TotalPages: int(proto.TotalPages),
-		UserId:     int(proto.UserId),
-	}
-}
+// func mapProtoBookEntityToBook(proto *protos.BookEntity) models.Book {
+// 	return models.Book{
+// 		Title:      proto.Title,
+// 		Author:     proto.Author,
+// 		Genre:      proto.Genre,
+// 		TotalPages: int(proto.TotalPages),
+// 		UserId:     int(proto.UserId),
+// 	}
+// }
 
 func NewBook(svc *service.BookService) *server {
 	return &server{svc: svc}
