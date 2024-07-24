@@ -20,8 +20,6 @@ func main() {
 	// load env variable
 	db := database.InitDb()
 
-	defer db.Close()
-
 	// create the repository
 
 	repo := repository.NewBookRepository(db)

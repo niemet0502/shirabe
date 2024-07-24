@@ -1,10 +1,13 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
+	"github.com/niemet0502/shirabe/books/models"
 )
 
 const (
@@ -15,17 +18,18 @@ const (
 	dbname   = "book_db"
 )
 
-func InitDb() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+func InitDb() *gorm.DB {
+	psqlInfo := fmt.Sprintf("host=%s user=%s  "+
+		"password=%s dbname=%s port=%d sslmode=disable",
+		host, user, password, dbname, port)
 
-	db, err := sql.Open("postgres", psqlInfo)
-
+	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 	if err != nil {
-		fmt.Print(err)
-		fmt.Print("Db connection failed")
+		log.Fatal(err)
 	}
+
+	// Migrate the schema
+	db.AutoMigrate(&models.Book{})
 
 	return db
 }
