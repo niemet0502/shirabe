@@ -102,3 +102,14 @@ func (b *server) UpdateBook(ctx context.Context, rr *protos.BookEntity) (*protos
 
 	return &protos.CreateBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
+
+func (b *server) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest) (*protos.BooksResponse, error) {
+	books := b.svc.SearchBooks(int(rr.GetUserId()), rr.GetSearch())
+
+	var protoBooks []*protos.BookEntity
+	for _, book := range books {
+		protoBooks = append(protoBooks, mapBookToProtosBookEntity(book))
+	}
+
+	return &protos.BooksResponse{Books: protoBooks}, nil
+}
