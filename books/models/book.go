@@ -8,6 +8,7 @@ import (
 
 type Book struct {
 	gorm.Model
+	ID              uint `gorm:"primaryKey"`
 	Title           string
 	Author          string
 	Genre           string
