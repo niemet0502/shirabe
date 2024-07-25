@@ -55,3 +55,10 @@ func (repo *BookRepository) GetBooksByUser(id int) []models.Book {
 
 	return result
 }
+
+func (repo *BookRepository) UpdateBook(book models.Book) models.Book {
+	repo.db.Save(&book)
+
+	return book
+
+}

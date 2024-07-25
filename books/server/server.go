@@ -35,6 +35,26 @@ func mapBookToProtosBookEntity(book models.Book) *protos.BookEntity {
 	}
 }
 
+func mapProtosToBookModel(pb *protos.BookEntity) models.Book {
+	book := models.Book{
+		ID:              uint(pb.GetId()),
+		Title:           pb.GetTitle(),
+		Author:          pb.GetAuthor(),
+		Genre:           pb.GetGenre(),
+		Status:          int(pb.GetStatus()),
+		TotalPages:      int(pb.GetTotalPages()),
+		ReadingProgress: int(pb.GetReadingProgress()),
+		UserId:          int(pb.GetUserId()),
+		Cover:           pb.GetCover(),
+		Description:     pb.GetDescription(),
+	}
+	book.PublicatedAt, _ = time.Parse("02-01-2006", pb.GetPublicatedAt())
+	book.StartReadingAt, _ = time.Parse("02-01-2006", pb.GetStartReadingAt())
+	book.FinishReadingAt, _ = time.Parse("02-01-2006", pb.GetFinishReadingAt())
+
+	return book
+}
+
 func NewBook(svc *service.BookService) *server {
 	return &server{svc: svc}
 }
@@ -75,4 +95,10 @@ func (b *server) GetBooks(ctx context.Context, rr *protos.BooksRequest) (*protos
 	}
 
 	return &protos.BooksResponse{Books: protoBooks}, nil
+}
+
+func (b *server) UpdateBook(ctx context.Context, rr *protos.BookEntity) (*protos.CreateBookResponse, error) {
+	result := b.svc.UpdateBook(mapProtosToBookModel(rr))
+
+	return &protos.CreateBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
