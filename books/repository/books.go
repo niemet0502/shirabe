@@ -26,6 +26,9 @@ func (repo *BookRepository) CreateBook(newBook models.CreateBook) models.Book {
 		TotalPages:      newBook.TotalPages,
 		ReadingProgress: 0,
 		UserId:          newBook.UserId,
+		Cover:           newBook.Cover,
+		Description:     newBook.Description,
+		PublicatedAt:    newBook.PublicatedAt,
 	}
 
 	repo.db.Create(&book)
@@ -39,7 +42,7 @@ func (repo *BookRepository) GetBook(id int) (models.Book, error) {
 	result := repo.db.First(&book, id)
 
 	if result.Error != nil {
-		return models.Book{}, errors.New("Failed to fetch the book")
+		return models.Book{}, errors.New("failed to fetch the book")
 	}
 
 	return book, nil

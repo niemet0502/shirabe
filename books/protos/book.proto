@@ -19,6 +19,9 @@ message CreateBookRequest {
     string genre = 4; 
     int32 totalPages = 5; 
     int32 userId = 6;
+    string cover = 7; 
+    string description = 8; 
+    string publicatedAt = 9; 
 }
 
 message CreateBookResponse {
@@ -34,6 +37,11 @@ message BookEntity {
     int32 totalPages = 6; 
     int32 readingProgress = 7; 
     int32 userId = 8;
+    string cover = 9; 
+    string description = 10; 
+    string publicatedAt = 11; 
+    string startReadingAt = 12; 
+    string finishReadingAt = 13; 
 }
 
 message BooksRequest {
