@@ -68,7 +68,7 @@ func (repo *BookRepository) SearchBooks(userId int, search string) []models.Book
 	var books []models.Book
 	query := fmt.Sprintf("%%%s%%", search)
 
-	repo.db.Where("user_id = ? AND title LIKE ? OR author LIKE ? ", userId, query, query).Find(&books)
+	repo.db.Where("user_id = ? AND (title LIKE ? OR author LIKE ?)", userId, query, query).Find(&books)
 
 	return books
 }
