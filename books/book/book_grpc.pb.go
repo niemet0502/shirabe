@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	Book_GetBook_FullMethodName    = "/Book/GetBook"
-	Book_GetBooks_FullMethodName   = "/Book/GetBooks"
-	Book_CreateBook_FullMethodName = "/Book/CreateBook"
-	Book_UpdateBook_FullMethodName = "/Book/UpdateBook"
+	Book_GetBook_FullMethodName     = "/Book/GetBook"
+	Book_GetBooks_FullMethodName    = "/Book/GetBooks"
+	Book_CreateBook_FullMethodName  = "/Book/CreateBook"
+	Book_UpdateBook_FullMethodName  = "/Book/UpdateBook"
+	Book_SearchBooks_FullMethodName = "/Book/SearchBooks"
 )
 
 // BookClient is the client API for Book service.
@@ -33,6 +34,7 @@ type BookClient interface {
 	GetBooks(ctx context.Context, in *BooksRequest, opts ...grpc.CallOption) (*BooksResponse, error)
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*CreateBookResponse, error)
 	UpdateBook(ctx context.Context, in *BookEntity, opts ...grpc.CallOption) (*CreateBookResponse, error)
+	SearchBooks(ctx context.Context, in *SearchBooksRequest, opts ...grpc.CallOption) (*BooksResponse, error)
 }
 
 type bookClient struct {
@@ -83,6 +85,16 @@ func (c *bookClient) UpdateBook(ctx context.Context, in *BookEntity, opts ...grp
 	return out, nil
 }
 
+func (c *bookClient) SearchBooks(ctx context.Context, in *SearchBooksRequest, opts ...grpc.CallOption) (*BooksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BooksResponse)
+	err := c.cc.Invoke(ctx, Book_SearchBooks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookServer is the server API for Book service.
 // All implementations must embed UnimplementedBookServer
 // for forward compatibility
@@ -91,6 +103,7 @@ type BookServer interface {
 	GetBooks(context.Context, *BooksRequest) (*BooksResponse, error)
 	CreateBook(context.Context, *CreateBookRequest) (*CreateBookResponse, error)
 	UpdateBook(context.Context, *BookEntity) (*CreateBookResponse, error)
+	SearchBooks(context.Context, *SearchBooksRequest) (*BooksResponse, error)
 	mustEmbedUnimplementedBookServer()
 }
 
@@ -109,6 +122,9 @@ func (UnimplementedBookServer) CreateBook(context.Context, *CreateBookRequest) (
 }
 func (UnimplementedBookServer) UpdateBook(context.Context, *BookEntity) (*CreateBookResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateBook not implemented")
+}
+func (UnimplementedBookServer) SearchBooks(context.Context, *SearchBooksRequest) (*BooksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchBooks not implemented")
 }
 func (UnimplementedBookServer) mustEmbedUnimplementedBookServer() {}
 
@@ -195,6 +211,24 @@ func _Book_UpdateBook_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Book_SearchBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchBooksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServer).SearchBooks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Book_SearchBooks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServer).SearchBooks(ctx, req.(*SearchBooksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Book_ServiceDesc is the grpc.ServiceDesc for Book service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -217,6 +251,10 @@ var Book_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateBook",
 			Handler:    _Book_UpdateBook_Handler,
+		},
+		{
+			MethodName: "SearchBooks",
+			Handler:    _Book_SearchBooks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

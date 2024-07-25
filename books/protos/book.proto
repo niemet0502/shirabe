@@ -12,6 +12,12 @@ service Book {
     rpc GetBooks(BooksRequest) returns (BooksResponse);
     rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
     rpc UpdateBook(BookEntity) returns (CreateBookResponse);
+    rpc SearchBooks(SearchBooksRequest) returns (BooksResponse);
+}
+
+message SearchBooksRequest {
+    int32 userId = 1;
+    string search = 2; 
 }
 
 message CreateBookRequest {
