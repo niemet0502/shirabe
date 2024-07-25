@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"time"
 
 	protos "github.com/niemet0502/shirabe/books/book"
 	"github.com/niemet0502/shirabe/books/models"
@@ -26,18 +27,13 @@ func mapBookToProtosBookEntity(book models.Book) *protos.BookEntity {
 		TotalPages:      int32(book.TotalPages),
 		ReadingProgress: int32(book.ReadingProgress),
 		UserId:          int32(book.UserId),
+		Cover:           book.Cover,
+		Description:     book.Description,
+		PublicatedAt:    book.PublicatedAt.String(),
+		StartReadingAt:  book.StartReadingAt.String(),
+		FinishReadingAt: book.FinishReadingAt.String(),
 	}
 }
-
-// func mapProtoBookEntityToBook(proto *protos.BookEntity) models.Book {
-// 	return models.Book{
-// 		Title:      proto.Title,
-// 		Author:     proto.Author,
-// 		Genre:      proto.Genre,
-// 		TotalPages: int(proto.TotalPages),
-// 		UserId:     int(proto.UserId),
-// 	}
-// }
 
 func NewBook(svc *service.BookService) *server {
 	return &server{svc: svc}
@@ -54,18 +50,21 @@ func (b *server) GetBook(ctx context.Context, rr *protos.GetBookRequest) (*proto
 
 func (b *server) CreateBook(ctx context.Context, rr *protos.CreateBookRequest) (*protos.CreateBookResponse, error) {
 	createBookDto := models.CreateBook{
-		Title:      rr.GetTitle(),
-		Author:     rr.GetAuthor(),
-		Genre:      rr.GetGenre(),
-		TotalPages: int(rr.GetTotalPages()),
-		UserId:     int(rr.GetUserId()),
+		Title:       rr.GetTitle(),
+		Author:      rr.GetAuthor(),
+		Genre:       rr.GetGenre(),
+		TotalPages:  int(rr.GetTotalPages()),
+		UserId:      int(rr.GetUserId()),
+		Cover:       rr.GetCover(),
+		Description: rr.GetDescription(),
 	}
+
+	createBookDto.PublicatedAt, _ = time.Parse("02-01-2006", rr.GetPublicatedAt())
+
 	result := b.svc.CreateBook(createBookDto)
 
 	return &protos.CreateBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
-
-// func (b *server) UpdateBook(ctx context.Context)
 
 func (b *server) GetBooks(ctx context.Context, rr *protos.BooksRequest) (*protos.BooksResponse, error) {
 	books := b.svc.GetBooks(int(rr.GetUserId()))
