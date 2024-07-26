@@ -23,6 +23,7 @@ const (
 	ShelveService_CreateShelf_FullMethodName = "/ShelveService/CreateShelf"
 	ShelveService_UpdateShelf_FullMethodName = "/ShelveService/UpdateShelf"
 	ShelveService_RemoveShelf_FullMethodName = "/ShelveService/RemoveShelf"
+	ShelveService_GetShelf_FullMethodName    = "/ShelveService/GetShelf"
 )
 
 // ShelveServiceClient is the client API for ShelveService service.
@@ -33,6 +34,7 @@ type ShelveServiceClient interface {
 	CreateShelf(ctx context.Context, in *CreateShelfRequest, opts ...grpc.CallOption) (*CreateShelfResponse, error)
 	UpdateShelf(ctx context.Context, in *UpdateShelfRequest, opts ...grpc.CallOption) (*UpdateShelfResponse, error)
 	RemoveShelf(ctx context.Context, in *RemoveShelfRequest, opts ...grpc.CallOption) (*RemoveShelfResponse, error)
+	GetShelf(ctx context.Context, in *RemoveShelfRequest, opts ...grpc.CallOption) (*CreateShelfResponse, error)
 }
 
 type shelveServiceClient struct {
@@ -83,6 +85,16 @@ func (c *shelveServiceClient) RemoveShelf(ctx context.Context, in *RemoveShelfRe
 	return out, nil
 }
 
+func (c *shelveServiceClient) GetShelf(ctx context.Context, in *RemoveShelfRequest, opts ...grpc.CallOption) (*CreateShelfResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateShelfResponse)
+	err := c.cc.Invoke(ctx, ShelveService_GetShelf_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShelveServiceServer is the server API for ShelveService service.
 // All implementations must embed UnimplementedShelveServiceServer
 // for forward compatibility
@@ -91,6 +103,7 @@ type ShelveServiceServer interface {
 	CreateShelf(context.Context, *CreateShelfRequest) (*CreateShelfResponse, error)
 	UpdateShelf(context.Context, *UpdateShelfRequest) (*UpdateShelfResponse, error)
 	RemoveShelf(context.Context, *RemoveShelfRequest) (*RemoveShelfResponse, error)
+	GetShelf(context.Context, *RemoveShelfRequest) (*CreateShelfResponse, error)
 	mustEmbedUnimplementedShelveServiceServer()
 }
 
@@ -109,6 +122,9 @@ func (UnimplementedShelveServiceServer) UpdateShelf(context.Context, *UpdateShel
 }
 func (UnimplementedShelveServiceServer) RemoveShelf(context.Context, *RemoveShelfRequest) (*RemoveShelfResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveShelf not implemented")
+}
+func (UnimplementedShelveServiceServer) GetShelf(context.Context, *RemoveShelfRequest) (*CreateShelfResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetShelf not implemented")
 }
 func (UnimplementedShelveServiceServer) mustEmbedUnimplementedShelveServiceServer() {}
 
@@ -195,6 +211,24 @@ func _ShelveService_RemoveShelf_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ShelveService_GetShelf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveShelfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShelveServiceServer).GetShelf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ShelveService_GetShelf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShelveServiceServer).GetShelf(ctx, req.(*RemoveShelfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ShelveService_ServiceDesc is the grpc.ServiceDesc for ShelveService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -217,6 +251,10 @@ var ShelveService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveShelf",
 			Handler:    _ShelveService_RemoveShelf_Handler,
+		},
+		{
+			MethodName: "GetShelf",
+			Handler:    _ShelveService_GetShelf_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

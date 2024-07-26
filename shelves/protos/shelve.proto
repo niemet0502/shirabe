@@ -12,6 +12,7 @@ service ShelveService {
     rpc CreateShelf(CreateShelfRequest) returns (CreateShelfResponse);
     rpc UpdateShelf(UpdateShelfRequest) returns (UpdateShelfResponse);
     rpc RemoveShelf(RemoveShelfRequest) returns (RemoveShelfResponse);
+    rpc GetShelf(RemoveShelfRequest) returns (CreateShelfResponse);
 }
 
 message RemoveShelfResponse {
