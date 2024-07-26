@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -34,4 +35,16 @@ func (r *ShelvesRepository) CreateShelf(name string, userId int) models.Shelf {
 	r.db.Create(&shelf)
 
 	return shelf
+}
+
+func (r *ShelvesRepository) RemoveShelf(shelfId int) error {
+	var shelf models.Shelf
+
+	if err := r.db.First(&shelf, shelfId).Error; err != nil {
+		return errors.New("shelf not found")
+	}
+
+	r.db.Delete(&models.Shelf{}, shelfId)
+
+	return nil
 }

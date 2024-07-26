@@ -6,6 +6,9 @@ import (
 	"github.com/niemet0502/shirabe/shelves/models"
 	"github.com/niemet0502/shirabe/shelves/service"
 	pb "github.com/niemet0502/shirabe/shelves/shelve"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -39,4 +42,12 @@ func (s *Server) GetShelves(ctx context.Context, rr *pb.GetShelvesRequest) (*pb.
 func (s *Server) CreateShelf(ctx context.Context, rr *pb.CreateShelfRequest) (*pb.CreateShelfResponse, error) {
 	result := s.svc.CreateShelf(rr.GetName(), int(rr.GetUserId()))
 	return &pb.CreateShelfResponse{Shelf: mapShelfToShelfProto(result)}, nil
+}
+
+func (s *Server) RemoveShelf(ctx context.Context, rr *pb.RemoveShelfRequest) (*pb.RemoveShelfResponse, error) {
+
+	if err := s.svc.RemoveShelf(int(rr.GetShelfId())); err != nil {
+		return &pb.RemoveShelfResponse{}, status.Errorf(codes.NotFound, "Failed to remove the shelf")
+	}
+	return &pb.RemoveShelfResponse{Message: "Shelf successfully removed"}, nil
 }

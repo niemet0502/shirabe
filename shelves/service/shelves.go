@@ -20,3 +20,7 @@ func (svc *ShelvesService) GetShelvesByUser(userId int) []models.Shelf {
 func (svc *ShelvesService) CreateShelf(name string, userId int) models.Shelf {
 	return svc.repo.CreateShelf(name, userId)
 }
+
+func (svc *ShelvesService) RemoveShelf(shelfId int) error {
+	return svc.repo.RemoveShelf(shelfId)
+}
