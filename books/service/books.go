@@ -37,6 +37,6 @@ func (svc *BookService) UpdateBook(book models.Book) models.Book {
 	return svc.repo.UpdateBook(book)
 }
 
-func (svc *BookService) SearchBooks(userId int, search string) []models.Book {
-	return svc.repo.SearchBooks(userId, search)
+func (svc *BookService) SearchBooks(userId, status int, search string) []models.Book {
+	return svc.repo.SearchBooks(userId, status, search)
 }

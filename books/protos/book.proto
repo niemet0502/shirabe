@@ -18,6 +18,7 @@ service Book {
 message SearchBooksRequest {
     int32 userId = 1;
     string search = 2; 
+    int32 status = 3;
 }
 
 message CreateBookRequest {

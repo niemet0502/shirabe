@@ -104,7 +104,8 @@ func (b *server) UpdateBook(ctx context.Context, rr *protos.BookEntity) (*protos
 }
 
 func (b *server) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest) (*protos.BooksResponse, error) {
-	books := b.svc.SearchBooks(int(rr.GetUserId()), rr.GetSearch())
+
+	books := b.svc.SearchBooks(int(rr.GetUserId()), int(rr.GetStatus()), rr.GetSearch())
 
 	var protoBooks []*protos.BookEntity
 	for _, book := range books {

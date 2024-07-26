@@ -64,11 +64,17 @@ func (repo *BookRepository) UpdateBook(book models.Book) models.Book {
 
 }
 
-func (repo *BookRepository) SearchBooks(userId int, search string) []models.Book {
+func (repo *BookRepository) SearchBooks(userId, status int, search string) []models.Book {
 	var books []models.Book
 	query := fmt.Sprintf("%%%s%%", search)
 
-	repo.db.Where("user_id = ? AND (title LIKE ? OR author LIKE ?)", userId, query, query).Find(&books)
+	db := repo.db.Where("user_id = ? AND (title LIKE ? OR author LIKE ?)", userId, query, query)
+
+	if status != 0 {
+		db = db.Where("status = ?", status)
+	}
+
+	db.Find(&books)
 
 	return books
 }
