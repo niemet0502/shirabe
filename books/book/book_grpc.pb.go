@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	Book_GetBook_FullMethodName     = "/Book/GetBook"
-	Book_GetBooks_FullMethodName    = "/Book/GetBooks"
-	Book_CreateBook_FullMethodName  = "/Book/CreateBook"
-	Book_UpdateBook_FullMethodName  = "/Book/UpdateBook"
-	Book_SearchBooks_FullMethodName = "/Book/SearchBooks"
+	Book_GetBook_FullMethodName         = "/Book/GetBook"
+	Book_GetBooks_FullMethodName        = "/Book/GetBooks"
+	Book_CreateBook_FullMethodName      = "/Book/CreateBook"
+	Book_UpdateBook_FullMethodName      = "/Book/UpdateBook"
+	Book_SearchBooks_FullMethodName     = "/Book/SearchBooks"
+	Book_GetBooksByShelf_FullMethodName = "/Book/GetBooksByShelf"
 )
 
 // BookClient is the client API for Book service.
@@ -35,6 +36,7 @@ type BookClient interface {
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*CreateBookResponse, error)
 	UpdateBook(ctx context.Context, in *BookEntity, opts ...grpc.CallOption) (*CreateBookResponse, error)
 	SearchBooks(ctx context.Context, in *SearchBooksRequest, opts ...grpc.CallOption) (*BooksResponse, error)
+	GetBooksByShelf(ctx context.Context, in *GetBooksByShelfRequest, opts ...grpc.CallOption) (*BooksResponse, error)
 }
 
 type bookClient struct {
@@ -95,6 +97,16 @@ func (c *bookClient) SearchBooks(ctx context.Context, in *SearchBooksRequest, op
 	return out, nil
 }
 
+func (c *bookClient) GetBooksByShelf(ctx context.Context, in *GetBooksByShelfRequest, opts ...grpc.CallOption) (*BooksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BooksResponse)
+	err := c.cc.Invoke(ctx, Book_GetBooksByShelf_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookServer is the server API for Book service.
 // All implementations must embed UnimplementedBookServer
 // for forward compatibility
@@ -104,6 +116,7 @@ type BookServer interface {
 	CreateBook(context.Context, *CreateBookRequest) (*CreateBookResponse, error)
 	UpdateBook(context.Context, *BookEntity) (*CreateBookResponse, error)
 	SearchBooks(context.Context, *SearchBooksRequest) (*BooksResponse, error)
+	GetBooksByShelf(context.Context, *GetBooksByShelfRequest) (*BooksResponse, error)
 	mustEmbedUnimplementedBookServer()
 }
 
@@ -125,6 +138,9 @@ func (UnimplementedBookServer) UpdateBook(context.Context, *BookEntity) (*Create
 }
 func (UnimplementedBookServer) SearchBooks(context.Context, *SearchBooksRequest) (*BooksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchBooks not implemented")
+}
+func (UnimplementedBookServer) GetBooksByShelf(context.Context, *GetBooksByShelfRequest) (*BooksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBooksByShelf not implemented")
 }
 func (UnimplementedBookServer) mustEmbedUnimplementedBookServer() {}
 
@@ -229,6 +245,24 @@ func _Book_SearchBooks_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Book_GetBooksByShelf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBooksByShelfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServer).GetBooksByShelf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Book_GetBooksByShelf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServer).GetBooksByShelf(ctx, req.(*GetBooksByShelfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Book_ServiceDesc is the grpc.ServiceDesc for Book service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -255,6 +289,10 @@ var Book_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchBooks",
 			Handler:    _Book_SearchBooks_Handler,
+		},
+		{
+			MethodName: "GetBooksByShelf",
+			Handler:    _Book_GetBooksByShelf_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

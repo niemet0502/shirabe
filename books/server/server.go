@@ -114,3 +114,15 @@ func (b *server) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest)
 
 	return &protos.BooksResponse{Books: protoBooks}, nil
 }
+
+func (b *server) GetBooksByShelf(ctx context.Context, rr *protos.GetBooksByShelfRequest) (*protos.BooksResponse, error) {
+
+	books := b.svc.GetBooksByShelf(rr.GetIds())
+
+	var protoBooks []*protos.BookEntity
+	for _, book := range books {
+		protoBooks = append(protoBooks, mapBookToProtosBookEntity(book))
+	}
+
+	return &protos.BooksResponse{Books: protoBooks}, nil
+}

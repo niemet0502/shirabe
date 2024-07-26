@@ -13,6 +13,11 @@ service Book {
     rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
     rpc UpdateBook(BookEntity) returns (CreateBookResponse);
     rpc SearchBooks(SearchBooksRequest) returns (BooksResponse);
+    rpc GetBooksByShelf(GetBooksByShelfRequest) returns (BooksResponse);
+}
+
+message GetBooksByShelfRequest {
+    repeated int32 ids = 1;
 }
 
 message SearchBooksRequest {

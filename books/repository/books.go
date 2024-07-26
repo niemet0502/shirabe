@@ -78,3 +78,10 @@ func (repo *BookRepository) SearchBooks(userId, status int, search string) []mod
 
 	return books
 }
+
+func (repo *BookRepository) GetBooksByShelf(ids []int32) []models.Book {
+	var books []models.Book
+	repo.db.Find(&books, ids)
+
+	return books
+}

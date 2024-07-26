@@ -40,3 +40,7 @@ func (svc *BookService) UpdateBook(book models.Book) models.Book {
 func (svc *BookService) SearchBooks(userId, status int, search string) []models.Book {
 	return svc.repo.SearchBooks(userId, status, search)
 }
+
+func (svc *BookService) GetBooksByShelf(ids []int32) []models.Book {
+	return svc.repo.GetBooksByShelf(ids)
+}
