@@ -48,3 +48,13 @@ func (r *ShelvesRepository) RemoveShelf(shelfId int) error {
 
 	return nil
 }
+
+func (r *ShelvesRepository) GetShelf(shelfId int) (models.Shelf, error) {
+	var shelf models.Shelf
+
+	if err := r.db.First(&shelf, shelfId).Error; err != nil {
+		return models.Shelf{}, errors.New("shelf not found")
+	}
+
+	return shelf, nil
+}

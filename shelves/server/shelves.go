@@ -51,3 +51,11 @@ func (s *Server) RemoveShelf(ctx context.Context, rr *pb.RemoveShelfRequest) (*p
 	}
 	return &pb.RemoveShelfResponse{Message: "Shelf successfully removed"}, nil
 }
+
+func (s *Server) GetShelf(ctx context.Context, rr *pb.RemoveShelfRequest) (*pb.CreateShelfResponse, error) {
+	result, err := s.svc.GetShelf(int(rr.GetShelfId()))
+	if err != nil {
+		return &pb.CreateShelfResponse{}, status.Errorf(codes.NotFound, "Failed to remove the shelf")
+	}
+	return &pb.CreateShelfResponse{Shelf: mapShelfToShelfProto(result)}, nil
+}
