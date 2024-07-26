@@ -20,9 +20,11 @@ func main() {
 
 	// create repository
 	repo := repository.NewShelvesRepository(db)
+	bsRepo := repository.NewBookShelfRepository(db)
 
 	// create service
 	svc := service.NewShelvesService(repo)
+	bsSvc := service.NewBookShelfService(bsRepo)
 
 	// create grpc server
 	gs := grpc.NewServer()
@@ -30,7 +32,10 @@ func main() {
 	// create new Shelves grpc server
 	c := server.NewServer(svc)
 
+	bc := server.NewBookShelfServer(bsSvc)
+
 	pb.RegisterShelveServiceServer(gs, c)
+	pb.RegisterBookShelfServiceServer(gs, bc)
 
 	reflection.Register(gs)
 

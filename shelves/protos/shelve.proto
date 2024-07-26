@@ -56,6 +56,35 @@ message CreateShelfResponse {
     Shelf shelf = 1; 
 }
 
+service BookShelfService {
+    rpc AddBook(CreateBookShelf) returns (BookShelfResponse);
+    rpc RemoveBook(CreateBookShelf) returns (RemoveBookShelfResponse);
+    rpc SearchBookShelf(BookShelf) returns (BookShelvesResponse);
+}
+
+message RemoveBookShelfResponse {
+    string message = 1;
+}
+
+message CreateBookShelf {
+    int32 shelfId = 1; 
+    int32 bookId = 2; 
+}
+
+message BookShelf {
+    int32 id = 1; 
+    int32 shelfId = 2; 
+    int32 bookId = 3; 
+}
+
+message BookShelfResponse { 
+    BookShelf bookshelf = 1;
+}
+
+message BookShelvesResponse {
+    repeated BookShelf bookShelves = 1;
+}
+
 
 
  

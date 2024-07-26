@@ -28,7 +28,7 @@ func InitDb() *gorm.DB {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.Shelf{})
+	db.AutoMigrate(&models.Shelf{}, &models.BookShelf{})
 
 	return db
 }
