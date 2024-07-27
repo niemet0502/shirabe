@@ -19,6 +19,7 @@ func (r *UserRepository) CreateUser(email, password string) (models.User, error)
 	user := models.User{Email: email, Password: password}
 
 	if err := r.db.Create(&user).Error; err != nil {
+
 		return models.User{}, errors.New("email already in use")
 	}
 
