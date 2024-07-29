@@ -20,7 +20,7 @@ func NewShelvesRepository(db *gorm.DB) *ShelvesRepository {
 func (r *ShelvesRepository) GetShelvesByUser(userId int) []models.Shelf {
 	var shelves []models.Shelf
 
-	err := r.db.Find(&shelves, "user_id = ?", userId)
+	err := r.db.Find(&shelves, "user_id = ?", userId).Error
 
 	if err != nil {
 		fmt.Printf("Unable to find shelves")
