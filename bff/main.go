@@ -37,10 +37,11 @@ func main() {
 	bookHandler := handlers.NewBookHandler(bookSvc)
 
 	// create routes
-	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.GetBook)
-	r.HandleFunc("/books", bookHandler.GetBooks)
-	r.HandleFunc("/books/search", bookHandler.SearchBooks)
+	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.GetBook).Methods("GET")
+	r.HandleFunc("/books/search", bookHandler.SearchBooks).Methods("GET")
 	r.HandleFunc("/books", bookHandler.CreateBook).Methods("POST")
+	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.UpdateBook).Methods("PUT")
+	r.HandleFunc("/books", bookHandler.GetBooks).Methods("GET")
 
 	// start the server
 	err = http.ListenAndServe(PORT, r)

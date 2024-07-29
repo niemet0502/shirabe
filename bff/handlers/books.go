@@ -99,7 +99,36 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	res, _ := json.Marshal(result)
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+
+}
+
+func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
+	var toUpdate models.Book
+	vars := mux.Vars(r)
+
+	id, _ := strconv.Atoi(vars["id"])
+
+	err := json.NewDecoder(r.Body).Decode(&toUpdate)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	toUpdate.ID = uint(id)
+
+	result, er := h.svc.UpdateBook(toUpdate)
+
+	if er != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res, _ := json.Marshal(result)
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
