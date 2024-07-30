@@ -64,8 +64,6 @@ func main() {
 	r.HandleFunc("/shelves/{id:[0-9]+}", shelvesHandler.UpdateShelf).Methods("PUT")
 	r.HandleFunc("/shelves/{id:[0-9]+}", shelvesHandler.GetShelf).Methods("GET")
 
-	// users and authentication
-
 	// shelves
 	usersConn, usersErr := grpc.NewClient("localhost:9004", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if usersErr != nil {
@@ -81,6 +79,19 @@ func main() {
 	userHandler := handlers.NewUserHandler(userSvc)
 
 	r.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
+
+	// bookshelf
+
+	bsClient := shelfProto.NewBookShelfServiceClient(shelvesConn)
+
+	bsSvc := services.NewBoolShelfService(bsClient, shelvesClient, bookClient)
+
+	bsHandler := handlers.NewBookShelfHandler(bsSvc)
+
+	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books", bsHandler.GetBooksByShelf).Methods("GET")
+	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.AddBookToShelf).Methods("POST")
+	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.RemoveBookFromShelf).Methods("DELETE")
+
 	// start the server
 	err = http.ListenAndServe(PORT, r)
 
