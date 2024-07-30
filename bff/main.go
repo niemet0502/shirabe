@@ -6,8 +6,10 @@ import (
 
 	"github.com/niemet0502/shirabe/bff/handlers"
 	"github.com/niemet0502/shirabe/bff/services"
+
 	bookProto "github.com/niemet0502/shirabe/books/book"
 	shelfProto "github.com/niemet0502/shirabe/shelves/shelve"
+	userProto "github.com/niemet0502/shirabe/users/user"
 
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
@@ -21,7 +23,8 @@ var (
 func main() {
 
 	r := mux.NewRouter()
-	// create client for each grpc
+
+	// books
 	conn, err := grpc.NewClient("localhost:9002", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
@@ -31,13 +34,10 @@ func main() {
 
 	bookClient := bookProto.NewBookClient(conn)
 
-	// create each service
 	bookSvc := services.NewBookService(bookClient)
 
-	// create handlers
 	bookHandler := handlers.NewBookHandler(bookSvc)
 
-	// create routes
 	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.GetBook).Methods("GET")
 	r.HandleFunc("/books/search", bookHandler.SearchBooks).Methods("GET")
 	r.HandleFunc("/books", bookHandler.CreateBook).Methods("POST")
@@ -45,7 +45,6 @@ func main() {
 	r.HandleFunc("/books", bookHandler.GetBooks).Methods("GET")
 
 	// shelves
-	// create client for each grpc
 	shelvesConn, shelvesErr := grpc.NewClient("localhost:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if shelvesErr != nil {
 		panic(shelvesErr)
@@ -65,6 +64,23 @@ func main() {
 	r.HandleFunc("/shelves/{id:[0-9]+}", shelvesHandler.UpdateShelf).Methods("PUT")
 	r.HandleFunc("/shelves/{id:[0-9]+}", shelvesHandler.GetShelf).Methods("GET")
 
+	// users and authentication
+
+	// shelves
+	usersConn, usersErr := grpc.NewClient("localhost:9004", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if usersErr != nil {
+		panic(usersErr)
+	}
+
+	defer shelvesConn.Close()
+
+	userClient := userProto.NewUserServiceClient(usersConn)
+
+	userSvc := services.NewUserService(userClient)
+
+	userHandler := handlers.NewUserHandler(userSvc)
+
+	r.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
 	// start the server
 	err = http.ListenAndServe(PORT, r)
 
