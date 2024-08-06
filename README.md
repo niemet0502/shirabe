@@ -71,40 +71,13 @@ Here is the endpoints list:
 ## Web
 
 ## Installation
+### Before you start 
+- Install Docker and Docker Compose.
 
-## Built by 
-### Packages 
-```
-    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-    go install google.golang.org/grpc
-	go install google.golang.org/grpc/reflection
+## License 
+The tool is available as open source under the terms of the [MIT License](https://opensource.org/license/MIT)
 
-    go get -u github.com/lib/pq
+## Built by
 
-```
+- Marius Vincent NIEMET [Twitter](https://twitter.com/mariusniemet05) [LinkedIn](https://www.linkedin.com/in/marius-vincent-niemet-928b48182/) 
 
-### Generate code
-
-```
-    protoc -I protos/ --go_out=. --go-grpc_out=. protos/currency.proto
-```
-## Features 
-- [x] Create a book 
-- [x] Search for a book => pass a search params and apply it to (title and author)
-- [x] Update book's reading progress 
-- [x] Update book status => (reading, to read, finished)
-- [x] Fetch currently reading books 
-- [x] Fetch next reading 
-- [x] Create a shelf
-- [x] Remove a Shelf
-- [x] Fetch Shelves list 
-- [x] Fetch Shelf details
-- [x] Add a book to a shelf 
-- [x] Remove book from a 
-- [x] Get shelf's books 
-- [x] Sign in (create user)
-- Sign up (login)
-- Sign out
-- Remove an account 
-- Generate book's information details
