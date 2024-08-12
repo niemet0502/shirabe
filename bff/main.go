@@ -25,7 +25,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// books
-	conn, err := grpc.NewClient("localhost:9002", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("books:9002", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +45,7 @@ func main() {
 	r.HandleFunc("/books", bookHandler.GetBooks).Methods("GET")
 
 	// shelves
-	shelvesConn, shelvesErr := grpc.NewClient("localhost:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	shelvesConn, shelvesErr := grpc.NewClient("shelves:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if shelvesErr != nil {
 		panic(shelvesErr)
 	}
@@ -65,7 +65,7 @@ func main() {
 	r.HandleFunc("/shelves/{id:[0-9]+}", shelvesHandler.GetShelf).Methods("GET")
 
 	// shelves
-	usersConn, usersErr := grpc.NewClient("localhost:9004", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	usersConn, usersErr := grpc.NewClient("users:9004", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if usersErr != nil {
 		panic(usersErr)
 	}

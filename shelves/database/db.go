@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	host     = "localhost"
-	port     = 9438
+	host     = "shelvesdb"
+	port     = 5432
 	user     = "marius"
 	password = "root"
 	dbname   = "shelve_db"

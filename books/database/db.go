@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	host     = "localhost"
-	port     = 9439
+	host     = "booksdb"
+	port     = 5432
 	user     = "marius"
 	password = "root"
 	dbname   = "book_db"

@@ -1,5 +1,22 @@
 services:
-  bookservice:
+  bff:
+    build:
+      context: ./bff
+      target: final
+    ports:
+      - 9005:9005
+  books:
+    build:
+      context: ./books
+      target: final
+    ports:
+      - 9002:9002
+    depends_on:
+      booksdb:
+        condition: service_healthy
+      bff:
+        condition: service_started
+  booksdb:
     image: postgres:15-alpine
     ports:
       - "9439:5432"
@@ -9,8 +26,25 @@ services:
       - POSTGRES_DB=book_db
     volumes:
       - bookdb-data:/var/lib/pgsql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  shelveservice:
+  shelves:
+    build:
+      context: ./shelves
+      target: final
+    ports:
+      - 9003:9003
+    depends_on:
+      shelvesdb:
+        condition: service_healthy
+      bff:
+        condition: service_started
+
+  shelvesdb:
     image: postgres:15-alpine
     ports:
       - "9438:5432"
@@ -20,6 +54,23 @@ services:
       - POSTGRES_DB=shelve_db
     volumes:
       - shelve-data:/var/lib/pgsql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  users:
+    build:
+      context: ./users
+      target: final
+    ports:
+      - 9004:9004
+    depends_on:
+      usersdb:
+        condition: service_healthy
+      bff:
+        condition: service_started
 
   usersdb:
     image: postgres:15-alpine
@@ -31,6 +82,11 @@ services:
       - POSTGRES_DB=user_db
     volumes:
       - users-data:/var/lib/pgsql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   bookdb-data:
