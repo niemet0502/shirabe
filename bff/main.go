@@ -11,6 +11,7 @@ import (
 	shelfProto "github.com/niemet0502/shirabe/shelves/shelve"
 	userProto "github.com/niemet0502/shirabe/users/user"
 
+	goHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -92,8 +93,11 @@ func main() {
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.AddBookToShelf).Methods("POST")
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.RemoveBookFromShelf).Methods("DELETE")
 
+	// CORS Handlers
+	ch := goHandlers.CORS(goHandlers.AllowedOrigins([]string{"http://localhost:5173"}))
+
 	// start the server
-	err = http.ListenAndServe(PORT, r)
+	err = http.ListenAndServe(PORT, ch(r))
 
 	if err != nil {
 		log.Fatal("The server didn't start")
