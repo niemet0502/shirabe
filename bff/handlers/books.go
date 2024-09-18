@@ -41,7 +41,7 @@ func (h *BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 
 func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 	// TODO get the userId from the token
-	userId := 2
+	userId := 50
 
 	result, err := h.svc.GetBooks(userId)
 
@@ -59,7 +59,7 @@ func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 
 func (h *BookHandler) SearchBooks(w http.ResponseWriter, r *http.Request) {
 	// TODO get the userId from the token
-	userId := 2
+	userId := 50
 
 	status, _ := strconv.Atoi(r.URL.Query().Get("status"))
 	search := r.URL.Query().Get("search")
@@ -82,18 +82,34 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	// TODO get the userId from the token
 	userId := 50
 
-	var createBook models.CreateBook
-
-	err := json.NewDecoder(r.Body).Decode(&createBook)
-
+	err := r.ParseMultipartForm(10 << 20) // Parse form
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
 		return
 	}
 
+	totalPages, _ := strconv.Atoi(r.FormValue("totalPages"))
+
+	createBook := models.CreateBook{
+		Title:       r.FormValue("title"),
+		Author:      r.FormValue("author"),
+		Genre:       r.FormValue("genre"),
+		TotalPages:  totalPages,
+		UserId:      userId,
+		Description: r.FormValue("description"),
+	}
+
+	file, handler, err := r.FormFile("cover")
+	if err != nil {
+		http.Error(w, "Unable to retrieve file", http.StatusBadRequest)
+		return
+	}
+
+	defer file.Close()
+
 	createBook.UserId = userId
 
-	result, err := h.svc.CreateBook(createBook)
+	result, err := h.svc.CreateBook(createBook, file, handler.Filename)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -101,6 +117,7 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, _ := json.Marshal(result)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 

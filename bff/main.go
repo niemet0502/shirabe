@@ -15,6 +15,10 @@ import (
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 var (
@@ -24,6 +28,18 @@ var (
 func main() {
 
 	r := mux.NewRouter()
+
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("eu-north-1"),
+	})
+
+	if err != nil {
+		log.Printf("Failed to connect to aws")
+		panic(err)
+	}
+
+	// Create an S3 service client
+	s3svc := s3.New(sess)
 
 	// books
 	conn, err := grpc.NewClient("localhost:9002", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -35,7 +51,7 @@ func main() {
 
 	bookClient := bookProto.NewBookClient(conn)
 
-	bookSvc := services.NewBookService(bookClient)
+	bookSvc := services.NewBookService(bookClient, s3svc)
 
 	bookHandler := handlers.NewBookHandler(bookSvc)
 
