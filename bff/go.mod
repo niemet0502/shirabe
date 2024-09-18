@@ -4,7 +4,11 @@ go 1.22.0
 
 require github.com/niemet0502/shirabe/books v0.0.0-20240727234600-74ef196d99a4
 
-require github.com/felixge/httpsnoop v1.0.3 // indirect
+require (
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
+	github.com/felixge/httpsnoop v1.0.3 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
+)
 
 require (
 	github.com/gorilla/handlers v1.5.2
