@@ -11,9 +11,14 @@ import (
 	shelfProto "github.com/niemet0502/shirabe/shelves/shelve"
 	userProto "github.com/niemet0502/shirabe/users/user"
 
+	goHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 var (
@@ -23,6 +28,18 @@ var (
 func main() {
 
 	r := mux.NewRouter()
+
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("eu-north-1"),
+	})
+
+	if err != nil {
+		log.Printf("Failed to connect to aws")
+		panic(err)
+	}
+
+	// Create an S3 service client
+	s3svc := s3.New(sess)
 
 	// books
 	conn, err := grpc.NewClient("localhost:9002", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -34,7 +51,7 @@ func main() {
 
 	bookClient := bookProto.NewBookClient(conn)
 
-	bookSvc := services.NewBookService(bookClient)
+	bookSvc := services.NewBookService(bookClient, s3svc)
 
 	bookHandler := handlers.NewBookHandler(bookSvc)
 
@@ -92,8 +109,11 @@ func main() {
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.AddBookToShelf).Methods("POST")
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.RemoveBookFromShelf).Methods("DELETE")
 
+	// CORS Handlers
+	ch := goHandlers.CORS(goHandlers.AllowedOrigins([]string{"http://localhost:5173"}))
+
 	// start the server
-	err = http.ListenAndServe(PORT, r)
+	err = http.ListenAndServe(PORT, ch(r))
 
 	if err != nil {
 		log.Fatal("The server didn't start")

@@ -3,13 +3,20 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
+	"mime/multipart"
 
 	"github.com/niemet0502/shirabe/bff/models"
 	pb "github.com/niemet0502/shirabe/books/book"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 type BookService struct {
 	client pb.BookClient
+	s3svc  *s3.S3
 }
 
 func mapProtosToBookModel(pb *pb.BookEntity) models.Book {
@@ -49,8 +56,8 @@ func mapBookModelToProto(book models.Book) *pb.BookEntity {
 	}
 }
 
-func NewBookService(client pb.BookClient) *BookService {
-	return &BookService{client}
+func NewBookService(client pb.BookClient, s3svc *s3.S3) *BookService {
+	return &BookService{client, s3svc}
 }
 
 func (s *BookService) GetBook(id int) (models.Book, error) {
@@ -116,7 +123,8 @@ func (s *BookService) BooksSearch(userId, status int, search string) ([]models.B
 
 }
 
-func (s *BookService) CreateBook(toCreate models.CreateBook) (models.Book, error) {
+func (s *BookService) CreateBook(toCreate models.CreateBook, file multipart.File, fileName string) (models.Book, error) {
+	name := fmt.Sprintf("%d-%s-%s", toCreate.UserId, toCreate.Title, fileName)
 
 	rr := &pb.CreateBookRequest{
 		Title:        toCreate.Title,
@@ -124,9 +132,29 @@ func (s *BookService) CreateBook(toCreate models.CreateBook) (models.Book, error
 		Genre:        toCreate.Genre,
 		TotalPages:   int32(toCreate.TotalPages),
 		UserId:       int32(toCreate.UserId),
-		Cover:        toCreate.Cover,
+		Cover:        name,
 		Description:  toCreate.Description,
 		PublicatedAt: toCreate.PublicatedAt,
+	}
+
+	// upload file
+	if file != nil {
+		input := &s3.PutObjectInput{
+			Bucket: aws.String("shirabebookscover"),
+			Key:    aws.String(name),
+			Body:   file,
+		}
+
+		_, err := s.s3svc.PutObject(input)
+
+		if err != nil {
+			log.Printf("Failed to upload the file")
+		}
+
+		key := fmt.Sprintf("https://shirabebookscover.s3.eu-north-1.amazonaws.com/%s", name)
+
+		rr.Cover = key
+
 	}
 
 	resp, err := s.client.CreateBook(context.Background(), rr)
