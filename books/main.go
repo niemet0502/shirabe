@@ -9,6 +9,7 @@ import (
 	"github.com/niemet0502/shirabe/books/service"
 
 	pb "github.com/niemet0502/shirabe/books/book"
+	p "github.com/niemet0502/shirabe/books/readingprogress"
 	"github.com/niemet0502/shirabe/books/server"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -21,7 +22,6 @@ func main() {
 	db := database.InitDb()
 
 	// create the repository
-
 	repo := repository.NewBookRepository(db)
 
 	// create the service
@@ -33,6 +33,16 @@ func main() {
 	c := server.NewBook(svc)
 
 	pb.RegisterBookServer(gs, c)
+
+	// handle reading progress
+
+	progressRepo := repository.NewReadingProgressRepository(db)
+
+	progressSvc := service.NewReadingProgressService(progressRepo, svc)
+
+	progressService := server.NewReadingProgressServer(progressSvc)
+
+	p.RegisterReadingServiceServer(gs, progressService)
 
 	reflection.Register(gs)
 

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type server struct {
+type bookServer struct {
 	protos.UnimplementedBookServer
 	svc *service.BookService
 }
@@ -55,11 +55,11 @@ func mapProtosToBookModel(pb *protos.BookEntity) models.Book {
 	return book
 }
 
-func NewBook(svc *service.BookService) *server {
-	return &server{svc: svc}
+func NewBook(svc *service.BookService) *bookServer {
+	return &bookServer{svc: svc}
 }
 
-func (b *server) GetBook(ctx context.Context, rr *protos.GetBookRequest) (*protos.GetBookResponse, error) {
+func (b *bookServer) GetBook(ctx context.Context, rr *protos.GetBookRequest) (*protos.GetBookResponse, error) {
 	result, err := b.svc.GetBook(int(rr.GetBookId()))
 
 	if err != nil {
@@ -68,7 +68,7 @@ func (b *server) GetBook(ctx context.Context, rr *protos.GetBookRequest) (*proto
 	return &protos.GetBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
 
-func (b *server) CreateBook(ctx context.Context, rr *protos.CreateBookRequest) (*protos.CreateBookResponse, error) {
+func (b *bookServer) CreateBook(ctx context.Context, rr *protos.CreateBookRequest) (*protos.CreateBookResponse, error) {
 	createBookDto := models.CreateBook{
 		Title:       rr.GetTitle(),
 		Author:      rr.GetAuthor(),
@@ -86,7 +86,7 @@ func (b *server) CreateBook(ctx context.Context, rr *protos.CreateBookRequest) (
 	return &protos.CreateBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
 
-func (b *server) GetBooks(ctx context.Context, rr *protos.BooksRequest) (*protos.BooksResponse, error) {
+func (b *bookServer) GetBooks(ctx context.Context, rr *protos.BooksRequest) (*protos.BooksResponse, error) {
 	books := b.svc.GetBooks(int(rr.GetUserId()))
 
 	var protoBooks []*protos.BookEntity
@@ -97,13 +97,13 @@ func (b *server) GetBooks(ctx context.Context, rr *protos.BooksRequest) (*protos
 	return &protos.BooksResponse{Books: protoBooks}, nil
 }
 
-func (b *server) UpdateBook(ctx context.Context, rr *protos.BookEntity) (*protos.CreateBookResponse, error) {
+func (b *bookServer) UpdateBook(ctx context.Context, rr *protos.BookEntity) (*protos.CreateBookResponse, error) {
 	result := b.svc.UpdateBook(mapProtosToBookModel(rr))
 
 	return &protos.CreateBookResponse{Book: mapBookToProtosBookEntity(result)}, nil
 }
 
-func (b *server) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest) (*protos.BooksResponse, error) {
+func (b *bookServer) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest) (*protos.BooksResponse, error) {
 
 	books := b.svc.SearchBooks(int(rr.GetUserId()), int(rr.GetStatus()), rr.GetSearch())
 
@@ -115,7 +115,7 @@ func (b *server) SearchBooks(ctx context.Context, rr *protos.SearchBooksRequest)
 	return &protos.BooksResponse{Books: protoBooks}, nil
 }
 
-func (b *server) GetBooksByShelf(ctx context.Context, rr *protos.GetBooksByShelfRequest) (*protos.BooksResponse, error) {
+func (b *bookServer) GetBooksByShelf(ctx context.Context, rr *protos.GetBooksByShelfRequest) (*protos.BooksResponse, error) {
 
 	books := b.svc.GetBooksByShelf(rr.GetIds())
 
