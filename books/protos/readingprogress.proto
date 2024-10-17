@@ -1,0 +1,29 @@
+syntax = "proto3";
+option go_package="/readingprogress";
+
+service ReadingService {
+    rpc CreateReadingProgress(CreateReadingProgressRequest) returns (ReadingProgress); 
+    rpc GetReadingProgress(GetReadingProgressRequest) returns (ReadingProgresses);
+}
+
+message ReadingProgress { 
+    int32 id = 1; 
+    int32 userId = 2; 
+    int32 bookId = 3; 
+    int32 pagesNumber = 4; 
+    string createdAt = 5;
+}
+
+message ReadingProgresses {
+    repeated ReadingProgress readingProgresses = 1; 
+}
+
+message GetReadingProgressRequest {
+    int32 bookId = 1; 
+}
+
+message CreateReadingProgressRequest { 
+    int32 userId = 1; 
+    int32 bookId = 2; 
+    int32 pagesNumber = 3; 
+}

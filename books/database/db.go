@@ -29,7 +29,7 @@ func InitDb() *gorm.DB {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&models.Book{})
+	db.AutoMigrate(&models.Book{}, &models.ReadingProgress{})
 
 	return db
 }
