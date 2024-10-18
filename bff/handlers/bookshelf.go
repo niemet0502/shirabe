@@ -31,9 +31,11 @@ func (h *BookShelfHandler) GetBooksByShelf(w http.ResponseWriter, r *http.Reques
 
 	json, _ := json.Marshal(res)
 
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(json)
 }
+
 func (h *BookShelfHandler) AddBookToShelf(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -66,6 +68,7 @@ func (h *BookShelfHandler) RemoveBookFromShelf(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 }
 
