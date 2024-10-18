@@ -22,6 +22,8 @@ gRPC (gRPC Remote Procedure Calls) is an open-source, high-performance, remote p
 | UpdateBook   | `UpdateBookRequest`     | `UpdateBookResponse`    | Update book information (reading progress)   |
 | SearchBooks   | `SearchBooksRequest`     | `SearchBooksResponse`    | Search books based on title, author or status    |
 | GetBooksByIds  | `GetBooksByIdsRequest`     | `GetBooksByIdsResponse`    | Get books by passing an array of ids    |
+| CreateReadingProgress  | `CreateReadingProgressRequest`     | `ReadingProgress`    | Create a reading progress for a given book    |
+| GetReadingProgress  | `GetReadingProgressRequest`     | `ReadingProgresses`    | Track the reading progress for a specific book  |
 
 To learn more about the request and response type check the [service's README](/books/). 
 

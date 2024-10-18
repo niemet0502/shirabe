@@ -8,6 +8,7 @@ import (
 	"github.com/niemet0502/shirabe/bff/services"
 
 	bookProto "github.com/niemet0502/shirabe/books/book"
+	readingProto "github.com/niemet0502/shirabe/books/readingprogress"
 	shelfProto "github.com/niemet0502/shirabe/shelves/shelve"
 	userProto "github.com/niemet0502/shirabe/users/user"
 
@@ -108,6 +109,17 @@ func main() {
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books", bsHandler.GetBooksByShelf).Methods("GET")
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.AddBookToShelf).Methods("POST")
 	r.HandleFunc("/shelves/{shelfId:[0-9]+}/books/{bookId:[0-9]+}", bsHandler.RemoveBookFromShelf).Methods("DELETE")
+
+	// reading progress
+
+	pgClient := readingProto.NewReadingServiceClient(conn)
+
+	pgSvc := services.NewReadingService(pgClient)
+
+	pgHandler := handlers.NewReadingProgressHandler(pgSvc)
+
+	r.HandleFunc("/readingprogress/{bookId:[0-9]+}", pgHandler.Get).Methods("GET")
+	r.HandleFunc("/readingprogress/", pgHandler.Create).Methods("POST")
 
 	// CORS Handlers
 	ch := goHandlers.CORS(goHandlers.AllowedOrigins([]string{"http://localhost:5173"}))
