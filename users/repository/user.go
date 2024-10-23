@@ -25,3 +25,15 @@ func (r *UserRepository) CreateUser(email, password string) (models.User, error)
 
 	return user, nil
 }
+
+func (r *UserRepository) GetUser(id int) (models.User, error) {
+	var user models.User
+
+	result := r.db.First(&user, id)
+
+	if result.Error != nil {
+		return models.User{}, nil
+	}
+
+	return user, nil
+}
