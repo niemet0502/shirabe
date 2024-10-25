@@ -39,3 +39,14 @@ func (s *Server) CreateUser(ctx context.Context, rr *pb.CreateUserRequest) (*pb.
 
 	return &pb.CreateUserResponse{User: mapModelToProto(user)}, nil
 }
+
+func (s *Server) GetUser(ctx context.Context, rr *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+
+	result, err := s.svc.GetUser(int(rr.GetUserId()))
+
+	if err != nil {
+		return &pb.GetUserResponse{}, err
+	}
+
+	return &pb.GetUserResponse{User: mapModelToProto(result)}, nil
+}
