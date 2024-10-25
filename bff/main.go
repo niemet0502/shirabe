@@ -97,6 +97,7 @@ func main() {
 	userHandler := handlers.NewUserHandler(userSvc)
 
 	r.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
+	r.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods("GET")
 
 	// bookshelf
 

@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/niemet0502/shirabe/bff/models"
 	"github.com/niemet0502/shirabe/bff/services"
 	"google.golang.org/grpc/codes"
@@ -51,6 +53,25 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		writeErrorResponse(w, http.StatusBadRequest, "An error has occured")
+		return
+	}
+
+	res, _ := json.Marshal(result)
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+
+}
+
+func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id, _ := strconv.Atoi(vars["id"])
+
+	result, err := h.svc.GetUser(id)
+
+	if err != nil {
 		writeErrorResponse(w, http.StatusBadRequest, "An error has occured")
 		return
 	}

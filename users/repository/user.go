@@ -32,7 +32,7 @@ func (r *UserRepository) GetUser(id int) (models.User, error) {
 	result := r.db.First(&user, id)
 
 	if result.Error != nil {
-		return models.User{}, nil
+		return models.User{}, errors.New("user not found")
 	}
 
 	return user, nil
