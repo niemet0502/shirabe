@@ -60,10 +60,10 @@ func NewBookService(client pb.BookClient, s3svc *s3.S3) *BookService {
 	return &BookService{client, s3svc}
 }
 
-func (s *BookService) GetBook(id int) (models.Book, error) {
+func (s *BookService) GetBook(slug string) (models.Book, error) {
 
 	rr := &pb.GetBookRequest{
-		BookId: int32(id),
+		BookSlug: slug,
 	}
 
 	resp, err := s.client.GetBook(context.Background(), rr)

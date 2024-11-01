@@ -56,7 +56,7 @@ func main() {
 
 	bookHandler := handlers.NewBookHandler(bookSvc)
 
-	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.GetBook).Methods("GET")
+	r.HandleFunc("/books/{slug}", bookHandler.GetBook).Methods("GET")
 	r.HandleFunc("/books/search", bookHandler.SearchBooks).Methods("GET")
 	r.HandleFunc("/books", bookHandler.CreateBook).Methods("POST")
 	r.HandleFunc("/books/{id:[0-9]+}", bookHandler.UpdateBook).Methods("PUT")
