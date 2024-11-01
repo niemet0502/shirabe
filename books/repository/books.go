@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 
@@ -19,10 +20,15 @@ func NewBookRepository(db *gorm.DB) *BookRepository {
 }
 
 func (repo *BookRepository) CreateBook(newBook models.CreateBook) models.Book {
+
+	var maxID int64
+	repo.db.Table("books").Select("MAX(id)").Row().Scan(&maxID)
+
 	book := models.Book{
 		Title:           newBook.Title,
 		Author:          newBook.Author,
 		Genre:           newBook.Genre,
+		Slug:            fmt.Sprintf("%d.%s", maxID+1, strings.ReplaceAll(newBook.Title, " ", "_")),
 		Status:          1,
 		TotalPages:      newBook.TotalPages,
 		ReadingProgress: 0,
@@ -47,6 +53,19 @@ func (repo *BookRepository) GetBook(id int) (models.Book, error) {
 	}
 
 	return book, nil
+}
+
+func (repo *BookRepository) GetBookBySlug(slug string) (models.Book, error) {
+	var book models.Book
+
+	result := repo.db.Find(&book, "slug = ?", slug)
+
+	if result.Error != nil {
+		return models.Book{}, errors.New("failed to fetch the book")
+	}
+
+	return book, nil
+
 }
 
 func (repo *BookRepository) GetBooksByUser(id int) []models.Book {

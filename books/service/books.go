@@ -25,6 +25,16 @@ func (svc *BookService) GetBook(id int) (models.Book, error) {
 	return result, nil
 }
 
+func (svc *BookService) GetBookBySlug(slug string) (models.Book, error) {
+	result, err := svc.repo.GetBookBySlug(slug)
+
+	if err != nil {
+		return models.Book{}, err
+	}
+
+	return result, nil
+}
+
 func (svc *BookService) GetBooks(userId int) []models.Book {
 	return svc.repo.GetBooksByUser(userId)
 }
