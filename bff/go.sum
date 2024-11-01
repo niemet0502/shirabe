@@ -17,6 +17,8 @@ github.com/jmespath/go-jmespath/internal/testify v1.5.1 h1:shLQSRRSCCPj3f2gpwzGw
 github.com/jmespath/go-jmespath/internal/testify v1.5.1/go.mod h1:L3OGu8Wl2/fWfCI6z80xFu9LTZmf1ZRjMHUOPmWr69U=
 github.com/niemet0502/shirabe/books v0.0.0-20241101123740-be0a135b2b10 h1:oz5NLa+318mj0qjhpeh87cC8xzzpIOr+4LW66UXpW/I=
 github.com/niemet0502/shirabe/books v0.0.0-20241101123740-be0a135b2b10/go.mod h1:2uZhYl4M5eqDs+/K9DUdkpE4WWtYyAqZoj2g+vG12Xk=
+github.com/niemet0502/shirabe/books v0.0.0-20241101135627-ab2e02be7925 h1:JtosBcmZ9Lea3Ew68P7zQiOplmW+95ahgDV5aMdzLbE=
+github.com/niemet0502/shirabe/books v0.0.0-20241101135627-ab2e02be7925/go.mod h1:2uZhYl4M5eqDs+/K9DUdkpE4WWtYyAqZoj2g+vG12Xk=
 github.com/niemet0502/shirabe/shelves v0.0.0-20240729131940-0b0c61e690d4 h1:c42lvyMUymzKyr1Tnd5sAVfPzDHNog8PKuFL+DfPPq0=
 github.com/niemet0502/shirabe/shelves v0.0.0-20240729131940-0b0c61e690d4/go.mod h1:6OP4zIrQyJtS7tnL/91wF6vX5ID8TfKqh75JwnjqYfc=
 github.com/niemet0502/shirabe/users v0.0.0-20240729193755-8f961d26c20b h1:3CktVdSLjRAvupsm4B4k63vfYXSKB0Ss7MmjBRvLS6w=

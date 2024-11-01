@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/aws/aws-sdk-go v1.55.5
-	github.com/niemet0502/shirabe/books v0.0.0-20241101123740-be0a135b2b10
+	github.com/niemet0502/shirabe/books v0.0.0-20241101135627-ab2e02be7925
 )
 
 require (
