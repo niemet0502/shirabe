@@ -22,9 +22,7 @@ func NewBookHandler(svc *services.BookService) *BookHandler {
 func (h *BookHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	id, _ := strconv.Atoi(vars["id"])
-
-	book, err := h.svc.GetBook(id)
+	book, err := h.svc.GetBook(vars["slug"])
 
 	w.Header().Set("Content-Type", "application/json")
 
