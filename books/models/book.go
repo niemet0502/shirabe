@@ -11,6 +11,7 @@ type Book struct {
 	ID              uint `gorm:"primaryKey"`
 	Title           string
 	Author          string
+	Slug            string
 	Genre           string
 	Status          int
 	TotalPages      int

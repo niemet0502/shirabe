@@ -23,6 +23,7 @@ func mapBookToProtosBookEntity(book models.Book) *protos.BookEntity {
 		Title:           book.Title,
 		Author:          book.Author,
 		Genre:           book.Genre,
+		Slug:            book.Slug,
 		Status:          int32(book.Status),
 		TotalPages:      int32(book.TotalPages),
 		ReadingProgress: int32(book.ReadingProgress),
@@ -41,6 +42,7 @@ func mapProtosToBookModel(pb *protos.BookEntity) models.Book {
 		Title:           pb.GetTitle(),
 		Author:          pb.GetAuthor(),
 		Genre:           pb.GetGenre(),
+		Slug:            pb.GetSlug(),
 		Status:          int(pb.GetStatus()),
 		TotalPages:      int(pb.GetTotalPages()),
 		ReadingProgress: int(pb.GetReadingProgress()),
@@ -60,7 +62,7 @@ func NewBook(svc *service.BookService) *bookServer {
 }
 
 func (b *bookServer) GetBook(ctx context.Context, rr *protos.GetBookRequest) (*protos.GetBookResponse, error) {
-	result, err := b.svc.GetBook(int(rr.GetBookId()))
+	result, err := b.svc.GetBookBySlug(rr.GetBookSlug())
 
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Book not found")

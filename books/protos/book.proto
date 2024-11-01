@@ -55,6 +55,7 @@ message BookEntity {
     string publicatedAt = 11; 
     string startReadingAt = 12; 
     string finishReadingAt = 13; 
+    string slug = 14; 
 }
 
 message BooksRequest {
@@ -66,7 +67,7 @@ message BooksResponse {
 }
 
 message GetBookRequest {
-    int32 bookId = 1; 
+    string bookSlug = 1; 
 }
 
 message GetBookResponse {
